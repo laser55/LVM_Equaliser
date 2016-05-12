@@ -106,7 +106,7 @@ static Local_ControlParams_t LocalParams;
 static LVM_EQNB_BandDef_t BandDefs[MAX_NUM_BANDS];
 static LVEQNB_Instance_t EQNB_Instance;
 static LVEQNB_MemTab_t   EQNB_MemTab;            /* For N-Band Equaliser */
-static LVEQNB_Handle_t gLVEQNB_Handle;
+static LVEQNB_Handle_t gLVEQNB_Handle = LVM_NULL;
 
 
 static int32_t EqualizerGetNumPresets(){
@@ -115,7 +115,16 @@ static int32_t EqualizerGetNumPresets(){
 
 LVEQNB_Handle_t LVM_EQ_CreateEQNBInstance()
 {
+    static char CreateFlag = 0;
     int i;
+
+    if(1 == CreateFlag)
+    {
+        if(NULL != gLVEQNB_Handle)
+            return gLVEQNB_Handle;
+        else
+            return LVM_NULL;
+    }
 
     memset((void*)&EQNB_Instance, 0, sizeof(LVEQNB_Instance_t));
     /*
@@ -173,7 +182,7 @@ LVEQNB_Handle_t LVM_EQ_CreateEQNBInstance()
     return hEQNBInstance;
 }
 
-LVEQNB_Handle_t LVM_EQ_GetEQNBHandle() 
+LVEQNB_Handle_t LVM_EQ_GetEQNBHandle()
 {
     return gLVEQNB_Handle;
 }
@@ -190,6 +199,8 @@ void LVM_EQ_ReleaseHandle(LVEQNB_Handle_t hHandle)
             EQNB_MemTab.Region[i].pBaseAddress = LVM_NULL;
         }
     }
+
+    gLVEQNB_Handle = LVM_NULL;
 }
 
 void LVM_EQ_InitParams()
@@ -217,6 +228,8 @@ LVM_ReturnStatus_en LVM_EQ_ApplyNewSetting(LVEQNB_Handle_t    hEQNBInstance)
     LVEQNB_Params_t             EQNB_Params;
 
 
+    if(NULL == hEQNBInstance)
+        return LVEQNB_NULLADDRESS;
     /*
     * Set the new parameters
     */
@@ -272,7 +285,7 @@ LVM_ReturnStatus_en LVM_EQ_ApplyNewSetting(LVEQNB_Handle_t    hEQNBInstance)
     }
     else
     {
-        return ((LVM_ReturnStatus_en)LVEQNB_SUCCESS);   
+        return ((LVM_ReturnStatus_en)LVEQNB_SUCCESS);
     }
 }
 
@@ -288,7 +301,7 @@ LVM_ReturnStatus_en LVM_EQ_Process(LVEQNB_Handle_t       hInstance,
     {
         return(LVM_SUCCESS);
     }
-    
+
     /*
      * Check valid points have been given
      */
@@ -325,7 +338,10 @@ int LVM_EQ_SetParams (void *pParam, void *pValue){
     int32_t param = *pParamTemp++;
     int i;
     int gainRounded;
-    
+
+
+    if((NULL == pParam) || (NULL == pValue))
+        return -EINVAL;
 
     printf("\tEqualizer_setParameter start\n");
     switch (param) {
