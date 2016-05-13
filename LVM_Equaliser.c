@@ -90,16 +90,16 @@ static const LVM_INT16 EQNB_5BandSoftPresets[] = {
                                        -1, 2, 5, 1, -2,     /* Pop Preset */
                                         5, 3, -1, 3, 5};    /* Rock Preset */
 static const char* gEqualizerPresets[] = {
-                                        {"Normal"},
-                                        {"Classical"},
-                                        {"Dance"},
-                                        {"Flat"},
-                                        {"Folk"},
-                                        {"Heavy Metal"},
-                                        {"Hip Hop"},
-                                        {"Jazz"},
-                                        {"Pop"},
-                                        {"Rock"}};
+                                        "Normal",
+                                        "Classical",
+                                        "Dance",
+                                        "Flat",
+                                        "Folk",
+                                        "Heavy Metal",
+                                        "Hip Hop",
+                                        "Jazz",
+                                        "Pop",
+                                        "Rock"};
 
 /* Instance parameters */
 static Local_ControlParams_t LocalParams;
@@ -346,7 +346,7 @@ int LVM_EQ_SetParams (void *pParam, void *pValue){
     printf("\tEqualizer_setParameter start\n");
     switch (param) {
     case EQ_PARAM_CUR_PRESET:
-        preset = (int32_t)(*(uint16_t *)pValue) - 1;
+        preset = (int32_t)(*(uint16_t *)pValue);
 
         printf("\tEqualizer_setParameter() EQ_PARAM_CUR_PRESET %d\n", preset);
         if ((preset >= EqualizerGetNumPresets())||(preset < 0)) {
@@ -374,7 +374,7 @@ int LVM_EQ_SetParams (void *pParam, void *pValue){
             gainRounded = (int)((level-50)/100);
         }
         //EqualizerSetBandLevel(pContext, band, level);
-        BandDefs[i].Gain = gainRounded;
+        BandDefs[band].Gain = gainRounded;
         break;
     case EQ_PARAM_PROPERTIES: {
         printf("\tEqualizer_setParameter() EQ_PARAM_PROPERTIES\n");

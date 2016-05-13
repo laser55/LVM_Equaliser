@@ -26,9 +26,10 @@ typedef enum
 }LVM_ReturnStatus_en;
 
 
-LVEQNB_Handle_t LVM_EQ_CreateEQNBInstance(); 
+LVEQNB_Handle_t LVM_EQ_CreateEQNBInstance();
 LVEQNB_Handle_t LVM_EQ_GetEQNBHandle();
 void LVM_EQ_ReleaseHandle(LVEQNB_Handle_t hHandle);
+void LVM_EQ_InitParams();
 void LVM_EQ_Set_Params();
 LVM_ReturnStatus_en LVM_EQ_ApplyNewSetting(LVEQNB_Handle_t    hEQNBInstance);
 LVM_ReturnStatus_en LVM_EQ_Process(LVEQNB_Handle_t       hInstance,
